@@ -96,6 +96,13 @@
         .amap-info-sharp{
             display: none;
         }
+        .amap-toolbar{
+            top:0px !important;
+            left: 0px !important;
+        }
+        .amap-pancontrol,.amap-locate{
+            display: none !important;
+        }
     </style>
     <title>Marker example</title>
 </head>
@@ -113,7 +120,7 @@
 
         resizeEnable: true,
         zoom: 5,
-        zooms:[4,18],
+        zooms:[5,9],
         center: [106.485352, 34.603692],
         mapStyle:'amap://styles/01e28a70f8fb054dcc5d2c91890de11e',
         labelzIndex:120
@@ -186,7 +193,7 @@
     var createMarker = function(data,hide,index) {
         var div = document.createElement('div');
         div.className = 'circle';
-
+        console.log(data);
         //div.style.backgroundColor = hide?'#393':'#09f';
         //div.innerHTML = data.city;
         var icon;
