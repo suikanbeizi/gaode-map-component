@@ -260,7 +260,8 @@
                     '<p><span>Province:</span>' + data.name + '</p><p><span>2015_province_gs:</span>' + (data.province_gs_2015/1000).toFixed(2) + 'k</p><p><span>2016_province_gs:</span>' + (data.province_gs_2016/1000).toFixed(2) + 'k</p><p><span>2017_province_ytd:</span>' + (data.province_ytd_2017/1000).toFixed(2) + 'k</p><p><span>chg_ya:</span>' + (data.chg_ya*100).toFixed(2) + '%</p><a href="#" id="detail" onclick="_onClick(' + index + ')">查看详情</a>'
                     :'<p><span>CustomerCode:</span>' + data.CustomerCode + '</p><p><span>CustomerName:</span>' + data.CustomerName + '</p><p><span>RegionGroup:</span>' + data.RegionGroup + '</p>' +
                     '<p><span>Region:</span>' + data.Region + '</p><p><span>Area:</span>' + data.Area + '</p><p><span>gs_2015:</span>' + (data.gs_2015/1000).toFixed(2) + 'k</p>' +
-                     '<p><span>gs_2016:</span>' + (data.gs_2016/1000).toFixed(2) + 'k</p><p><span>YTD_2017:</span>' + (data.YTD_2017/1000).toFixed(2) + 'k</p><p><span>chg_ya:</span>' + (data.chg_ya*100).toFixed(2) + '%</p>';
+                     '<p><span>gs_2016:</span>' + (data.gs_2016/1000).toFixed(2) + 'k</p><p><span>YTD_2017:</span>' + (data.YTD_2017/1000).toFixed(2) + 'k</p><p><span>chg_ya:</span>' + (data.chg_ya*100).toFixed(2) + '%</p>' +
+                    '<p><span>Biscuit:</span><span>'+(data.Biscuit/1000).toFixed(2)+'k</span></p><p><span>Gum:</span><span>'+(data.Gum/1000).toFixed(2)+'k</span></p><p><span>Chocolate:</span><span>'+(data.Chocolate/1000).toFixed(2)+'k</span></p>';
         marker.on('click',markerClick);
         //<a href="#" id="detail" onclick="_onClick(' + index + ')">查看详情</a>
         marker.subMarkers = [];
