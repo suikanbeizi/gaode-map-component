@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <style type="text/css">
+        body,html,#container{
+            height: 100%;
+            margin: 0px;
+            font:12px Arial;
+        }
+        .circle{
+            border-radius: 6px;
+            /*border: solid 1px silver;*/
+            width: 120px;
+            height: 16px;
+            padding: 3px;
+            text-align: center;
+            line-height: 18px;
+            max-width: 50px;
+            color:white;
+        }
+        .amap-info-content{
+            border: 0;
+            animation:mymove 2s infinite ;
+            -webkit-animation:mymove 2s ;
+            animation-fill-mode:forwards;
+        }
+        @keyframes mymove{
+            0%{
+                background-color: transparent;
+            }
+            100%{
+                background-color: rgba(230,45,208,0.8);
+            }
+
+        }
+        .amap-info-sharp{
+         top: -2px;
+        }
+        .amap-info-content p{
+            margin: 0;
+            margin: 5px 0;
+            font-size: 16px;
+            color: #fff;
+            animation:font 2s infinite ;
+            -webkit-animation:font 2s ;
+            animation-fill-mode:forwards;
+        }
+        @keyframes font{
+            0%{
+                color: transparent;
+            }
+            100%{
+                color: #fff;
+            }
+
+        }
+        .amap-info-content p:nth-child(1) {
+            color: #38d4f5;
+            font-weight: bold;
+            font-size: 20px;;
+        }
+        .amap-info-content a{
+            color: #38d4f5;
+            font-size: 14px;
+            animation:font 2s infinite ;
+            -webkit-animation:a 2s ;
+            animation-fill-mode:forwards;
+        }
+        @keyframes a{
+            0%{
+                color: transparent;
+            }
+            100%{
+                color:  #38d4f5;
+            }
+
+        }
+        .amap-info-content a:focus{
+            color: #38d4f5;
+        }
+        #container .home{
+            display: inline-block;
+            position: absolute;
+            color: white;
+            top: 10px;
+            right: 20px;
+            background-color: #c9caca;
+            z-index: 10000;
+            width:90px;
+            line-height:41px;
+            text-align: center;
+        }
+        .amap-info-sharp{
+            display: none;
+        }
+        .amap-toolbar{
+            top:0px !important;
+            left: 0px !important;
+        }
+        .amap-pancontrol,.amap-locate{
+            display: none !important;
+        }
+    </style>
+    <title>Marker example</title>
+</head>
+<body>
+<div id="container" tabindex="0">
+    <!--<a href="javascript:void(0);" onclick="closewin();" class="home">HOME</a>-->
+</div>
+<script src="marker.js"></script>
+<script src="https://webapi.amap.com/maps?v=1.3&key=469c928619ba1a9d85a6d089a8eb65bb"></script>
+<script src="https://webapi.amap.com/ui/1.0/main.js"></script>
+<script src="http://cache.amap.com/lbs/static/addToolbar.js"></script>
+<script src="jquery-2.1.3.min.js"></script>
+<script type="text/javascript">
+    var map = new AMap.Map('container', {
+
+        resizeEnable: true,
+        zoom: 5,
+        zooms:[5,18],
+        center: [106.485352, 34.603692],
+        mapStyle:'amap://styles/01e28a70f8fb054dcc5d2c91890de11e',
+        labelzIndex:120
+    });
+
+    var infoWindow = new AMap.InfoWindow({
+        offset: new AMap.Pixel(100, -40)
+    });
+    function markerClick(e){
+        infoWindow.setContent(e.target.content);
+        infoWindow.open(map, e.target.getPosition());
+
+    }
+
+    var createMarker = function(data,hide,index,subIndex) {
+        var div = document.createElement('div');
+        div.className = 'circle';
+        console.log(subIndex);
+        //div.style.backgroundColor = hide?'#393':'#09f';
+        //div.innerHTML = data.city;
+        var icon;
+        var YTD;
+        var width;
+        if(data.YTD_2017){
+            YTD=data.YTD_2017;
+        }
+        if(data.sell_status==2){
+            icon = new AMap.Icon({
+                image : 'http://wyc-store.oss-cn-shanghai.aliyuncs.com/images/DataV%E7%BB%84%E4%BB%B6%E5%BC%80%E5%8F%91/%E5%AE%9A%E4%BD%8D.png',//24px*24px
+                //icon可缺省，缺省时为默认的蓝色水滴图标，
+                imageSize : new AMap.Size(19,31)
+            });
+          //  icon='http://wyc-store.oss-cn-shanghai.aliyuncs.com/images/DataV%E7%BB%84%E4%BB%B6%E5%BC%80%E5%8F%91/%E5%AE%9A%E4%BD%8D.png';
+        }
+        else if(data.sell_status==0){
+            if(YTD>1028181){
+                width=24;
+            }
+            else if(YTD>133822&&YTD<1028181){
+                width=16;
+            }
+            else if(YTD<133822){
+                width=10;
+            }
+            icon = new AMap.Icon({
+                image : 'http://wyc-store.oss-cn-shanghai.aliyuncs.com/images/DataV%E7%BB%84%E4%BB%B6%E5%BC%80%E5%8F%91/%E7%BA%A2%E8%89%B2%281%29.png   ',//24px*24px
+                //icon可缺省，缺省时为默认的蓝色水滴图标，
+                imageSize : new AMap.Size( width, width)
+            });
+ //           icon='http://wyc-store.oss-cn-shanghai.aliyuncs.com/images/DataV%E7%BB%84%E4%BB%B6%E5%BC%80%E5%8F%91/%E9%BB%84%E8%89%B2.png';
+        }
+        else if(data.sell_status==1){
+            if(YTD>10199706){
+                width=24;
+            }
+            else if(YTD>1001783&&YTD<10199706){
+                width=16;
+            }
+            else if(YTD<1001783){
+                width=10;
+            }
+            if(data.chg_ya>=0){
+                icon = new AMap.Icon({
+                    image : 'http://wyc-store.oss-cn-shanghai.aliyuncs.com/images/DataV%E7%BB%84%E4%BB%B6%E5%BC%80%E5%8F%91/%E8%93%9D%E7%BB%BF%281%29.png',//24px*24px
+                    //icon可缺省，缺省时为默认的蓝色水滴图标，
+                    imageSize : new AMap.Size(width,width)
+                });
+            }
+            else if(data.chg_ya<0){
+                icon = new AMap.Icon({
+                    image : 'http://wyc-store.oss-cn-shanghai.aliyuncs.com/images/DataV%E7%BB%84%E4%BB%B6%E5%BC%80%E5%8F%91/%E9%BB%84%E8%89%B2%281%29.png',//24px*24px
+                    //icon可缺省，缺省时为默认的蓝色水滴图标，
+                    imageSize : new AMap.Size(width,width)
+                });
+            }
+
+         //  icon='http://wyc-store.oss-cn-shanghai.aliyuncs.com/images/DataV%E7%BB%84%E4%BB%B6%E5%BC%80%E5%8F%91/%E8%93%9D%E7%BB%BF%E8%89%B2.png';
+        }
+
+        var marker = new AMap.Marker({
+            //content: div,
+            icon:icon,
+            title:data.name,
+            position: [data.lng,data.lat],
+            zIndex: 150,
+            offset: new AMap.Pixel(-10, -40)
+        });
+            marker.content = data.name&&data.province_gs_2015&&data.province_gs_2016&&data.province_ytd_2017&&data.chg_ya?
+                    '<p><span>Province:</span>' + data.name + '</p><p><span>2015_province_gs:</span>' + (data.province_gs_2015/1000).toFixed(2) + 'k</p><p><span>2016_province_gs:</span>' + (data.province_gs_2016/1000).toFixed(2) + 'k</p><p><span>2017_province_ytd:</span>' + (data.province_ytd_2017/1000).toFixed(2) + 'k</p><p><span>chg_ya:</span>' + (data.chg_ya*100).toFixed(2) + '%</p><a href="#" id="detail" onclick="_onClick(' + index + ')">查看详情</a>'
+                    :'<p><span>CustomerCode:</span>' + data.CustomerCode + '</p><p><span>CustomerName:</span>' + data.CustomerName + '</p><p><span>RegionGroup:</span>' + data.RegionGroup + '</p>' +
+                    '<p><span>Region:</span>' + data.Region + '</p><p><span>Area:</span>' + data.Area + '</p><p><span>gs_2015:</span>' + (data.gs_2015/1000).toFixed(2) + 'k</p>' +
+                     '<p><span>gs_2016:</span>' + (data.gs_2016/1000).toFixed(2) + 'k</p><p><span>YTD_2017:</span>' + (data.YTD_2017/1000).toFixed(2) + 'k</p><p><span>chg_ya:</span>' + (data.chg_ya*100).toFixed(2) + '%</p>' +
+                    '<p><span>Biscuit:</span><span>'+(data.Biscuit/1000).toFixed(2)+'k</span></p><p><span>Gum:</span><span>'+(data.Gum/1000).toFixed(2)+'k</span></p><p><span>Chocolate:</span><span>'+(data.Chocolate/1000).toFixed(2)+'k</span></p><a href="#" id="detail" onclick="_onClick_mendian(' + index + ','+subIndex+')">查看详情</a>';
+        marker.on('click',markerClick);
+        //<a href="#" id="detail" onclick="_onClick(' + index + ')">查看详情</a>
+        marker.subMarkers = [];
+
+//        if(data.name==='北京市'||data.name==='河南省'||data.name==='黑龙江省'){
+//            //marker.setLabel({content:'&larr;请点击',offset:new AMap.Pixel(45,0)})
+//            map.setCenter(marker.getPosition());
+//        }
+
+        if(!hide){
+            marker.setMap(map)
+        }
+        if(data.sub&&data.sub.length){
+            for(var i = 0 ; i<data.sub.length;i+=1){
+                marker.subMarkers.push(createMarker(data.sub[i],true,i));
+            }
+        }
+        if(data.mendian&&data.mendian.length){
+            marker.subMarkers.mendian=[];
+            for(var m=0; m<data.mendian.length;m+=1){
+                marker.subMarkers.mendian.push(createMarker(data.mendian[m],true,index,m));
+            }
+        }
+
+
+        return marker;
+    }
+
+
+
+    var _onZoomEnd = function(e) {
+        if (map.getZoom() < 6) {
+            for (var i = 0; i < markers.length; i += 1) {
+                map.remove(markers[i].subMarkers)
+            }
+            map.add(markers);
+        }
+    }
+    var _onClick = function(index) {
+        if(markers[index].subMarkers.length){
+            map.add(markers[index].subMarkers);
+            map.setFitView(markers[index].subMarkers);
+            map.remove(markers);
+        }
+        infoWindow.close();
+    }
+
+    var _onClick_mendian = function(index,subIndex) {
+        console.log(subIndex);
+        if(markers[index].subMarkers[subIndex].mendian){
+            map.add(markers[index].subMarkers[subIndex].mendian);
+            map.setFitView(markers[index].subMarkers[subIndex].mendian);
+            map.remove(markers[index].subMarkers);
+        }
+        infoWindow.close();
+    }
+
+
+    var markers = []; //province见Demo引用的JS文件
+    for (var i = 0; i < message.length; i += 1) {
+        var marker = createMarker(message[i],false,i);
+        markers.push(marker);
+       // AMap.event.addListener(infoWindow.getContent, 'click', _onClick);
+    }
+
+    //map.setFitView();
+    AMap.event.addListener(map, 'zoomend', _onZoomEnd);
+    console.log(marker);
+
+</script>
+<script type="text/javascript" src="https://webapi.amap.com/demos/js/liteToolbar.js"></script>
+
+</body>
+<script>
+
+    function closewin(){
+        if (navigator.userAgent.indexOf("Firefox") != -1 || navigator.userAgent.indexOf("Chrome") !=-1) {
+            window.open('','_self','');
+            window.close();
+            // window.open("about:blank","_top").close()
+        } else {
+            window.opener = null;
+            window.open("", "_self");
+            window.close();
+            //window.open("about:blank","_top").close()
+        }
+    }
+</script>
+</html>
