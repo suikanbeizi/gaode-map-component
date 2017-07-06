@@ -104,7 +104,7 @@
             display: none !important;
         }
     </style>
-    <title>区域经销商</title>
+    <title>Marker example</title>
 </head>
 <body>
 <div id="container" tabindex="0">
@@ -130,66 +130,11 @@
 
         resizeEnable: true,
         zoom: 5,
-        zooms:[5,9],
+        zooms:[5,18],
         center: [106.485352, 34.603692],
         mapStyle:'amap://styles/01e28a70f8fb054dcc5d2c91890de11e',
         labelzIndex:120
     });
-
-//    var colors = [
-//                    "#4F658E", "#4F658E", "#4F658E", "#4F658E", "#4F658E", "#4F658E", "#4F658E", "#4F658E",
-//                    "#9c9c9c", "#9c9c9c", "#9c9c9c", "#9c9c9c", "#9c9c9c", "#9c9c9c", "#9c9c9c", "#9c9c9c",
-//                    "#1EA3AC", "#1EA3AC", "#1EA3AC", "#1EA3AC", "#651067", "#1EA3AC", "#1EA3AC", "#1EA3AC",
-//                    "#A77DAC", "#A77DAC", "#A77DAC", "#A77DAC", "#A77DAC", "#A77DAC", "#A77DAC", "#A77DAC",
-//                    "#A77DAC","#A77DAC"
-//                ];
-//
-//                AMapUI.loadUI(['geo/DistrictExplorer'], function(DistrictExplorer) {
-//
-//                    //创建一个实例
-//                    var districtExplorer = new DistrictExplorer({
-//                        map: map
-//                    });
-//
-//
-//                    var adcode = 100000;
-//
-//                    districtExplorer.loadAreaNode(adcode, function(error, areaNode) {
-//
-//                        //更新地图视野
-//                        map.setBounds(areaNode.getBounds(), null, null, true);
-//
-//                        //清除已有的绘制内容
-//                        districtExplorer.clearFeaturePolygons();
-//
-//                        //绘制子区域
-//                        districtExplorer.renderSubFeatures(areaNode, function(feature, i) {
-//
-//                            var fillColor = colors[i];
-//                            // var strokeColor = colors[colors.length - 1 - i % colors.length];
-//
-//                            return {
-//                    cursor: 'default',
-//                    bubble: true,
-//                    strokeColor: 'transparent',
-//                    strokeWeight: 0, //线宽
-//                    fillColor: fillColor, //填充色
-//                    fillOpacity: 0.8,//填充透明度
-//                };
-//            });
-//
-//            //绘制父区域
-////            districtExplorer.renderParentFeature(areaNode, {
-////                cursor: 'default',
-////                bubble: true,
-////                strokeColor: 'black', //线颜色
-////                strokeOpacity: 1, //线透明度
-////                strokeWeight: 1, //线宽
-////                fillColor: null, //填充色
-////                fillOpacity: 0.35, //填充透明度
-////            });
-//        });
-//    });
 
     var infoWindow = new AMap.InfoWindow({
         offset: new AMap.Pixel(100, -40)
@@ -200,10 +145,9 @@
 
     }
 
-    var createMarker = function(data,hide,index) {
+    var createMarker = function(data,hide,index,subIndex) {
         var div = document.createElement('div');
         div.className = 'circle';
-        console.log(data);
         //div.style.backgroundColor = hide?'#393':'#09f';
         //div.innerHTML = data.city;
         var icon;
@@ -273,15 +217,15 @@
             zIndex: 150,
             offset: new AMap.Pixel(-10, -40)
         });
-            marker.content = data.name&&data.province_gs_2015&&data.province_gs_2016&&data.province_ytd_2017&&data.chg_ya?
-                    '<p><span>Province:</span>' + data.name + '</p><p><span>2015_province_gs:</span>' + toThousands(parseInt(data.province_gs_2015/1000)) + 'k</p><p><span>2016_province_gs:</span>' + toThousands(parseInt(data.province_gs_2016/1000)) + 'k</p><p><span>2017_province_ytd:</span>' + toThousands(parseInt(data.province_ytd_2017/1000)) + 'k</p><p><span>chg_ya:</span>' + (data.chg_ya*100).toFixed(2) + '%</p><a href="#" id="detail" onclick="_onClick(' + index + ')">查看详情</a>'
-                    :'<p><span>CustomerCode:</span>' + data.CustomerCode + '</p><p><span>CustomerName:</span>' + data.CustomerName + '</p><p><span>RegionGroup:</span>' + data.RegionGroup + '</p>' +
-                    '<p><span>Region:</span>' + data.Region + '</p><p><span>Area:</span>' + data.Area + '</p><p><span>gs_2015:</span>' + toThousands(parseInt(data.gs_2015/1000)) + 'k</p>' +
-                     '<p><span>gs_2016:</span>' + toThousands(parseInt(data.gs_2016/1000)) + 'k</p><p><span>YTD_2017:</span>' + toThousands(parseInt(data.YTD_2017/1000)) + 'k</p><p><span>chg_ya:</span>' + (data.chg_ya*100).toFixed(2) + '%</p>' +
-                    '<p><span>Biscuit:</span><span>'+toThousands(parseInt(data.Biscuit/1000))+'k</span></p><p><span>Gum:</span><span>'+toThousands(parseInt(data.Gum/1000))+'k</span></p><p><span>Chocolate:</span><span>'+toThousands(parseInt(data.Chocolate/1000))+'k</span></p>';
+        marker.content = data.CustomerCode&&data.CustomerName? '<p><span>CustomerCode:</span>' + data.CustomerCode + '</p><p><span>CustomerName:</span>' + data.CustomerName + '</p><p><span>RegionGroup:</span>' + data.RegionGroup + '</p>' +
+        '<p><span>Region:</span>' + data.Region + '</p><p><span>Area:</span>' + data.Area + '</p><p><span>gs_2015:</span>' + toThousands(parseInt(data.gs_2015/1000)) + 'k</p>' +
+        '<p><span>gs_2016:</span>' + toThousands(parseInt(data.gs_2016/1000)) + 'k</p><p><span>YTD_2017:</span>' + toThousands(parseInt(data.YTD_2017/1000)) + 'k</p><p><span>chg_ya:</span>' + (data.chg_ya*100).toFixed(2) + '%</p>' +
+        '<p><span>Biscuit:</span><span>'+toThousands(parseInt(data.Biscuit/1000))+'k</span></p><p><span>Gum:</span><span>'+toThousands(parseInt(data.Gum/1000))+'k</span></p><p><span>Chocolate:</span><span>'+toThousands(parseInt(data.Chocolate/1000))+'k</span></p><a href="#" id="detail" onclick="_onClick(' + index + ')">查看详情</a>':
+        '<p><span></span><span></span></p>';
         marker.on('click',markerClick);
         //<a href="#" id="detail" onclick="_onClick(' + index + ')">查看详情</a>
         marker.subMarkers = [];
+        marker.mendian=[];
 //        if(data.name==='北京市'||data.name==='河南省'||data.name==='黑龙江省'){
 //            //marker.setLabel({content:'&larr;请点击',offset:new AMap.Pixel(45,0)})
 //            map.setCenter(marker.getPosition());
@@ -292,21 +236,23 @@
         }
         if(data.sub&&data.sub.length){
             for(var i = 0 ; i<data.sub.length;i+=1){
-                marker.subMarkers.push(createMarker(data.sub[i],true,-1));
+                marker.subMarkers.push(createMarker(data.sub[i],true,index,i));
             }
         }
+        if(data.mendian&&data.mendian.length){
+            for(var m=0; m<data.mendian.length;m+=1){
+                marker.mendian.push(createMarker(data.mendian[m],true,m));
+           }
+        }
+
+
         return marker;
     }
 
 
-    var _onZoomEnd = function(e) {
-        if (map.getZoom() < 6) {
-            for (var i = 0; i < markers.length; i += 1) {
-                map.remove(markers[i].subMarkers)
-            }
-            map.add(markers);
-        }
-    }
+    var subIndex;
+
+
     var _onClick = function(index) {
         if(markers[index].subMarkers.length){
             map.add(markers[index].subMarkers);
@@ -314,6 +260,37 @@
             map.remove(markers);
         }
         infoWindow.close();
+    }
+
+    var _onClick_mendian = function(index,subIndex) {
+        //console.log(subIndex);
+        if(markers[index].subMarkers[subIndex].mendian){
+            map.add(markers[index].subMarkers[subIndex].mendian);
+            map.setFitView(markers[index].subMarkers[subIndex].mendian);
+            map.remove(markers[index].subMarkers);
+        }
+        subIndex=index;
+        infoWindow.close();
+
+    }
+    var _onZoomEnd = function(e) {
+        console.log(map.getZoom());
+//        if(map.getZoom() <8 &&map.getZoom()>6){
+//            if(subIndex) {
+//                for (var n = 0; n < markers[subIndex].subMarkers.length; n += 1) {
+//                    map.remove(markers[subIndex].subMarkers[n].mendian)
+//                }
+//
+//                map.add(markers[subIndex].subMarkers)
+//            }
+//        }
+//        else
+        if (map.getZoom() < 6) {
+            for (var i = 0; i < markers.length; i += 1) {
+                map.remove(markers[i].subMarkers)
+            }
+            map.add(markers);
+        }
     }
 
 
@@ -326,7 +303,7 @@
 
     //map.setFitView();
     AMap.event.addListener(map, 'zoomend', _onZoomEnd);
-
+    //console.log(markers);
 
 </script>
 <script type="text/javascript" src="https://webapi.amap.com/demos/js/liteToolbar.js"></script>
