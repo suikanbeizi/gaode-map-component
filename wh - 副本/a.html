@@ -1,0 +1,65 @@
+var hailiang=function(index,hided) {
+AMapUI.load(['ui/misc/PointSimplifier', 'lib/$'], function(PointSimplifier, $) {
+
+if (!PointSimplifier.supportCanvas) {
+alert('当前环境不支持 Canvas！');
+return;
+}
+
+var pointSimplifierIns = new PointSimplifier({
+map: map, //所属的地图实例
+
+getPosition: function(dataIte, dataIndex) {
+//console.log(dataIte)
+
+//返回经纬度
+return [dataIte.lng, dataIte.lat];
+},
+getHoverTitle: function(dataItem, idx) {
+return dataItem.store_code;
+
+},
+renderOptions: {
+//点的样式
+pointStyle: {
+width: 6,
+height: 6
+},
+//鼠标hover时的title信息
+hoverTitleStyle: {
+position: 'top'
+}
+}
+});
+
+window.pointSimplifierIns = pointSimplifierIns;
+
+
+if(hided){
+pointSimplifierIns.setData(null);
+console.log(hided);
+}
+else{
+pointSimplifierIns.setData(message[index].mendian);
+}
+
+
+
+
+});
+}
+
+var _onClick = function(index) {
+map.remove(markers);
+hailiang(index,false);
+infoWindow.close();
+//console.log(map.getZoom())
+}
+console.log(map.getZoom());
+var _onZoomEnd = function(e) {
+console.log(map.getZoom());
+if (map.getZoom() < 9) {
+hailiang('',true);
+map.add(markers);
+}
+}

@@ -110,7 +110,7 @@
 <div id="container" tabindex="0">
     <!--<a href="javascript:void(0);" onclick="closewin();" class="home">HOME</a>-->
 </div>
-<script src="marker.js"></script>
+<script src="data.js"></script>
 <script src="https://webapi.amap.com/maps?v=1.3&key=469c928619ba1a9d85a6d089a8eb65bb"></script>
 <script src="https://webapi.amap.com/ui/1.0/main.js"></script>
 <script src="http://cache.amap.com/lbs/static/addToolbar.js"></script>
@@ -129,9 +129,9 @@
     var map = new AMap.Map('container', {
 
         resizeEnable: true,
-        zoom: 5,
-        zooms:[5,18],
-        center: [106.485352, 34.603692],
+        zoom: 7,
+        zooms:[7,18],
+        center: [114.298572,30.584355],
         mapStyle:'amap://styles/01e28a70f8fb054dcc5d2c91890de11e',
         labelzIndex:120
     });
@@ -217,78 +217,75 @@
             zIndex: 150,
             offset: new AMap.Pixel(-10, -40)
         });
-        marker.content = data.CustomerCode&&data.CustomerName? '<p><span>CustomerCode:</span>' + data.CustomerCode + '</p><p><span>CustomerName:</span>' + data.CustomerName + '</p><p><span>RegionGroup:</span>' + data.RegionGroup + '</p>' +
+        marker.content ='<p><span>CustomerCode:</span>' + data.CustomerCode + '</p><p><span>CustomerName:</span>' + data.CustomerName + '</p><p><span>RegionGroup:</span>' + data.RegionGroup + '</p>' +
         '<p><span>Region:</span>' + data.Region + '</p><p><span>Area:</span>' + data.Area + '</p><p><span>gs_2015:</span>' + toThousands(parseInt(data.gs_2015/1000)) + 'k</p>' +
         '<p><span>gs_2016:</span>' + toThousands(parseInt(data.gs_2016/1000)) + 'k</p><p><span>YTD_2017:</span>' + toThousands(parseInt(data.YTD_2017/1000)) + 'k</p><p><span>chg_ya:</span>' + (data.chg_ya*100).toFixed(2) + '%</p>' +
-        '<p><span>Biscuit:</span><span>'+toThousands(parseInt(data.Biscuit/1000))+'k</span></p><p><span>Gum:</span><span>'+toThousands(parseInt(data.Gum/1000))+'k</span></p><p><span>Chocolate:</span><span>'+toThousands(parseInt(data.Chocolate/1000))+'k</span></p><a href="#" id="detail" onclick="_onClick(' + index + ')">查看详情</a>':
-        '<p><span></span><span></span></p>';
+        '<p><span>Biscuit:</span><span>'+toThousands(parseInt(data.Biscuit/1000))+'k</span></p><p><span>Gum:</span><span>'+toThousands(parseInt(data.Gum/1000))+'k</span></p><p><span>Chocolate:</span><span>'+toThousands(parseInt(data.Chocolate/1000))+'k</span></p><a href="#" id="detail" onclick="_onClick(' + index + ')">查看详情</a>';
         marker.on('click',markerClick);
         //<a href="#" id="detail" onclick="_onClick(' + index + ')">查看详情</a>
-        marker.subMarkers = [];
-        marker.mendian=[];
-//        if(data.name==='北京市'||data.name==='河南省'||data.name==='黑龙江省'){
-//            //marker.setLabel({content:'&larr;请点击',offset:new AMap.Pixel(45,0)})
-//            map.setCenter(marker.getPosition());
-//        }
 
         if(!hide){
             marker.setMap(map)
-        }
-        if(data.sub&&data.sub.length){
-            for(var i = 0 ; i<data.sub.length;i+=1){
-                marker.subMarkers.push(createMarker(data.sub[i],true,index,i));
-            }
-        }
-        if(data.mendian&&data.mendian.length){
-            for(var m=0; m<data.mendian.length;m+=1){
-                marker.mendian.push(createMarker(data.mendian[m],true,m));
-           }
         }
 
 
         return marker;
     }
+    var hailiang = function(index, hided) {
 
-
-    var subIndex;
-
-
-    var _onClick = function(index) {
-        if(markers[index].subMarkers.length){
-            map.add(markers[index].subMarkers);
-            map.setFitView(markers[index].subMarkers);
-            map.remove(markers);
+        if (!pointSimplifierIns) {
+            return;
         }
-        infoWindow.close();
+
+        if (hided) {
+            pointSimplifierIns.setData(null);
+        } else {
+            pointSimplifierIns.setData(message[index].mendian);
+        }
     }
 
-    var _onClick_mendian = function(index,subIndex) {
-        //console.log(subIndex);
-        if(markers[index].subMarkers[subIndex].mendian){
-            map.add(markers[index].subMarkers[subIndex].mendian);
-            map.setFitView(markers[index].subMarkers[subIndex].mendian);
-            map.remove(markers[index].subMarkers);
-        }
-        subIndex=index;
-        infoWindow.close();
 
+    function init(PointSimplifier) {
+        var pointSimplifierIns = new PointSimplifier({
+            map: map, //所属的地图实例
+            getPosition: function(dataIte, dataIndex) {
+                //返回经纬度
+                return [dataIte.lng, dataIte.lat];
+            },
+            pointClick: function(dataItem, idx) {
+                return '<p><span>store_code:</span><span>'+ dataItem.store_code+'</span></p>';
+            },
+            renderOptions: {
+                //点的样式
+                pointStyle: {
+                    width: 12,
+                    height: 12
+                }
+            }
+        });
+        window.pointSimplifierIns = pointSimplifierIns;
+    }
+
+    AMapUI.load(['ui/misc/PointSimplifier', 'lib/$'], function(PointSimplifier, $) {
+
+        if (!PointSimplifier.supportCanvas) {
+            alert('当前环境不支持 Canvas！');
+            return;
+        }
+
+        init(PointSimplifier);
+    });
+
+    var _onClick = function(index) {
+        map.remove(markers);
+        hailiang(index,false);
+        infoWindow.close();
+        //console.log(map.getZoom())
     }
     var _onZoomEnd = function(e) {
         console.log(map.getZoom());
-//        if(map.getZoom() <8 &&map.getZoom()>6){
-//            if(subIndex) {
-//                for (var n = 0; n < markers[subIndex].subMarkers.length; n += 1) {
-//                    map.remove(markers[subIndex].subMarkers[n].mendian)
-//                }
-//
-//                map.add(markers[subIndex].subMarkers)
-//            }
-//        }
-//        else
-        if (map.getZoom() < 6) {
-            for (var i = 0; i < markers.length; i += 1) {
-                map.remove(markers[i].subMarkers)
-            }
+        if (map.getZoom() < 9) {
+            hailiang('',true);
             map.add(markers);
         }
     }
@@ -298,9 +295,8 @@
     for (var i = 0; i < message.length; i += 1) {
         var marker = createMarker(message[i],false,i);
         markers.push(marker);
-       // AMap.event.addListener(infoWindow.getContent, 'click', _onClick);
     }
-
+    console.log(markers);
     //map.setFitView();
     AMap.event.addListener(map, 'zoomend', _onZoomEnd);
     //console.log(markers);

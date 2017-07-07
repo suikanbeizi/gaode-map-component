@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+    <!-- 原始地址：//webapi.amap.com/ui/1.0/ui/misc/PointSimplifier/examples/index.html -->
+    <!--<base href="//webapi.amap.com/ui/1.0/ui/misc/PointSimplifier/examples/" />-->
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <title>海量点展示</title>
+    <style>
+        html,
+        body,
+        #container {
+            width: 100%;
+            height: 100%;
+            margin: 0px;
+        }
+
+        #loadingTip {
+            position: absolute;
+            z-index: 9999;
+            top: 0;
+            left: 0;
+            padding: 3px 10px;
+            background: red;
+            color: #fff;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+<div id="container"></div>
+<script src="data.js"></script>
+<script type="text/javascript" src='//webapi.amap.com/maps?v=1.3&key=469c928619ba1a9d85a6d089a8eb65bb'></script>
+<!-- UI组件库 1.0 -->
+<script src="//webapi.amap.com/ui/1.0/main.js"></script>
+
+<script type="text/javascript">
+    //创建地图
+    var map = new AMap.Map('container', {
+        zoom: 4
+    });
+
+    AMapUI.load(['ui/misc/PointSimplifier', 'lib/$'], function(PointSimplifier, $) {
+
+        if (!PointSimplifier.supportCanvas) {
+            alert('当前环境不支持 Canvas！');
+            return;
+        }
+
+        var pointSimplifierIns = new PointSimplifier({
+            map: map, //所属的地图实例
+
+            getPosition: function(dataIte, dataIndex) {
+                //console.log(dataIte)
+
+                //返回经纬度
+                return [dataIte.lng, dataIte.lat];
+            },
+            getHoverTitle: function(dataItem, idx) {
+                return dataItem.store_code;
+
+            },
+            renderOptions: {
+                //点的样式
+                pointStyle: {
+                    width: 6,
+                    height: 6
+                },
+                //鼠标hover时的title信息
+                hoverTitleStyle: {
+                    position: 'top'
+                }
+            }
+        });
+
+        window.pointSimplifierIns = pointSimplifierIns;
+
+
+        pointSimplifierIns.setData(message[2].mendian);
+        //pointSimplifierIns.setData();
+        });
+
+   // console.log(message.length);
+//        pointSimplifierIns.on('pointClick pointMouseover pointMouseout', function(e, record) {
+//            console.log(e.type, record);
+//        });
+</script>
+</body>
+
+</html>
